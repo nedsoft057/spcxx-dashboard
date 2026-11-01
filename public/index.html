@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPCXx Intelligence Terminal</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sky:#E8F4FF;
+  --sky2:#D0E9FF;
+  --blue:#2B7BE8;
+  --blue2:#1A5DB5;
+  --navy:#0F2A4A;
+  --steel:#1E3A5F;
+  --ice:#F0F8FF;
+  --white:#FFFFFF;
+  --muted:#6B8FAD;
+  --soft:#B8D4EC;
+  --up:#22C97A;
+  --dn:#E5504A;
+  --gold:#F5A623;
+  --purple:#8B6FE8;
+  --teal:#1BBFA5;
+}
+body{font-family:'Space Grotesk',sans-serif;background:linear-gradient(135deg,#0A1628 0%,#0F2A4A 50%,#0A1628 100%);color:var(--white);min-height:100vh;overflow-x:hidden}
+
+/* HEADER */
+header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(43,123,232,0.2);height:58px;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.logo b{color:var(--blue);font-weight:500}
+.hright{display:flex;align-items:center;gap:1.25rem}
+.hprice{font-family:'IBM Plex Mono',monospace;font-size:.8rem;font-weight:600;display:flex;align-items:center;gap:.4rem}
+.chg{font-size:.65rem;font-weight:400}
+.up{color:var(--up)}.dn{color:var(--dn)}
+.hlive{display:flex;align-items:center;gap:.35rem;font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--muted)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--up);animation:blink 2s infinite;box-shadow:0 0 6px var(--up)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+main{padding:74px 1.25rem 4rem;max-width:1180px;margin:0 auto}
+
+/* HERO */
+.hero{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;margin-bottom:2rem;padding-top:.75rem}
+.hero h1{font-size:clamp(1.9rem,3.8vw,3rem);font-weight:700;line-height:1.06;letter-spacing:-.03em;margin-bottom:.7rem;color:var(--white)}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--blue),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:.85rem;color:rgba(255,255,255,.55);line-height:1.75;max-width:420px}
+.tags{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.9rem}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:.56rem;padding:.2rem .5rem;border-radius:20px;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.4);background:rgba(255,255,255,.04);letter-spacing:.06em;transition:all .2s}
+.tag.on{border-color:rgba(43,123,232,.5);color:var(--blue);background:rgba(43,123,232,.1)}
+.tag.gr{border-color:rgba(27,191,165,.5);color:var(--teal);background:rgba(27,191,165,.08)}
+#oc{width:240px;height:240px;flex-shrink:0}
+
+/* CARDS */
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;backdrop-filter:blur(10px);transition:border-color .2s}
+.card:hover{border-color:rgba(43,123,232,.3)}
+
+/* PRICE PANEL */
+.ppanel{padding:1.5rem;margin-bottom:1.25rem}
+.phead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem}
+.pbig{font-size:2.6rem;font-weight:700;letter-spacing:-.04em;line-height:1;background:linear-gradient(135deg,#fff,rgba(255,255,255,.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.pchg{font-size:.8rem;font-weight:500;margin-left:.4rem;-webkit-text-fill-color:initial}
+.psub{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:.3rem}
+.src{font-family:'IBM Plex Mono',monospace;font-size:.52rem;padding:.15rem .4rem;border-radius:4px;background:rgba(27,191,165,.12);color:var(--teal);border:1px solid rgba(27,191,165,.25);margin-left:.4rem}
+.tabs{display:flex;gap:.25rem}
+.tab{font-family:'IBM Plex Mono',monospace;font-size:.58rem;padding:.25rem .5rem;border-radius:6px;border:1px solid rgba(255,255,255,.12);color:var(--muted);background:transparent;cursor:pointer;transition:all .15s}
+.tab.on{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 0 12px rgba(43,123,232,.4)}
+#cw{height:190px;width:100%}
+#cv{width:100%;height:100%}
+.pmeta{display:flex;gap:1.5rem;margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
+.pm{font-family:'IBM Plex Mono',monospace}
+.pml{font-size:.54rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.18rem}
+.pmv{font-size:.8rem;font-weight:600}
+.pmv.g{color:var(--up)}.pmv.r{color:var(--dn)}.pmv.b{color:var(--blue)}.pmv.t{color:var(--teal)}
+
+/* STATS */
+.srow{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:1.25rem}
+.sc{padding:1.1rem 1.15rem}
+.sl{font-family:'IBM Plex Mono',monospace;font-size:.54rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.42rem}
+.sv{font-size:1.5rem;font-weight:700;line-height:1;min-height:1.5rem;background:linear-gradient(135deg,#fff,rgba(255,255,255,.75));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sv.blue{background:linear-gradient(135deg,var(--blue),#5BA3FF);-webkit-background-clip:text;background-clip:text}
+.sv.teal{background:linear-gradient(135deg,var(--teal),#22E8CC);-webkit-background-clip:text;background-clip:text}
+.ss{font-family:'IBM Plex Mono',monospace;font-size:.57rem;color:var(--muted);margin-top:.32rem}
+
+.shim{background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.06) 75%);background-size:200% 100%;animation:sh 1.4s infinite;border-radius:4px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1.65fr 1fr;gap:1.1rem;margin-bottom:1.1rem}
+.panel{padding:1.35rem}
+.pfull{padding:1.35rem;margin-bottom:1.1rem}
+.pt{font-family:'IBM Plex Mono',monospace;font-size:.57rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:1.1rem;display:flex;align-items:center;gap:.4rem}
+.pt::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px var(--blue);display:inline-block;flex-shrink:0}
+
+/* CUSTODY NOTE */
+.cnote{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:rgba(245,166,35,.7);background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:8px;padding:.55rem .75rem;margin-bottom:.9rem;line-height:1.6}
+.cnote b{color:var(--gold)}
+
+/* WHALE LIST */
+.wl{display:flex;flex-direction:column;max-height:520px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(43,123,232,.3) transparent;padding-right:4px}
+.wi{padding:.72rem 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.wi:last-child{border-bottom:none}
+.wtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem}
+.wleft{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
+.waddr{font-family:'IBM Plex Mono',monospace;font-size:.63rem;color:var(--blue)}
+.wcex{font-family:'IBM Plex Mono',monospace;font-size:.5rem;padding:.08rem .3rem;border-radius:3px;background:rgba(245,166,35,.12);color:var(--gold);border:1px solid rgba(245,166,35,.2);font-weight:600}
+.wch{font-family:'IBM Plex Mono',monospace;font-size:.48rem;padding:.07rem .27rem;border-radius:3px;background:rgba(255,255,255,.07);color:var(--muted)}
+.wpct{font-family:'IBM Plex Mono',monospace;font-size:.63rem;color:rgba(255,255,255,.4);font-weight:500}
+.wbar{height:3px;background:rgba(255,255,255,.07);border-radius:10px;overflow:hidden;margin-bottom:.32rem}
+.wfill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--blue),var(--teal));width:0;transition:width 1.1s cubic-bezier(.4,0,.2,1)}
+.wfill.cx{background:linear-gradient(90deg,rgba(245,166,35,.5),var(--gold))}
+.wbot{display:flex;justify-content:space-between;align-items:baseline}
+.wtok{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:rgba(255,255,255,.85);font-weight:600}
+.wusd{font-family:'IBM Plex Mono',monospace;font-size:.63rem;color:var(--up);font-weight:600}
+
+/* DONUT */
+.dw{display:flex;flex-direction:column;align-items:center;gap:.9rem}
+#dc{width:120px;height:120px}
+.dl{width:100%;display:flex;flex-direction:column;gap:.45rem}
+.dli{display:flex;align-items:center;justify-content:space-between;font-size:.68rem}
+.dll{display:flex;align-items:center;gap:.35rem}
+.dld{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dlv{font-family:'IBM Plex Mono',monospace;color:var(--muted);font-size:.57rem}
+.chdist{display:flex;flex-direction:column;gap:.38rem;margin-top:.8rem;padding-top:.8rem;border-top:1px solid rgba(255,255,255,.06);width:100%}
+.chdt{font-family:'IBM Plex Mono',monospace;font-size:.52rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.15rem}
+.chdi{display:flex;justify-content:space-between;align-items:center}
+.chdn{font-family:'IBM Plex Mono',monospace;font-size:.62rem}
+.chdc{font-family:'IBM Plex Mono',monospace;color:var(--muted);font-size:.57rem}
+
+/* TIMELINE */
+.tl{display:flex;flex-direction:column}
+.txi{display:grid;grid-template-columns:52px 9px 1fr auto;gap:.7rem;align-items:center;padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.05);opacity:0;transform:translateX(-5px);transition:opacity .3s,transform .3s}
+.txi.v{opacity:1;transform:translateX(0)}
+.txi:last-child{border-bottom:none}
+.ttime{font-family:'IBM Plex Mono',monospace;font-size:.54rem;color:var(--muted);line-height:1.5}
+.tdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 6px currentColor}
+.taddrs{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:.28rem;flex-wrap:wrap}
+.tarr{color:var(--blue)}
+.tlbl{font-family:'IBM Plex Mono',monospace;font-size:.5rem;padding:.06rem .28rem;border-radius:3px;background:rgba(245,166,35,.1);color:var(--gold);border:1px solid rgba(245,166,35,.18)}
+.tsub{font-family:'IBM Plex Mono',monospace;font-size:.5rem;color:rgba(255,255,255,.2);margin-top:.1rem}
+.tr{text-align:right}
+.tamt{font-family:'IBM Plex Mono',monospace;font-size:.66rem;font-weight:600;color:var(--blue);white-space:nowrap}
+.tusd{font-family:'IBM Plex Mono',monospace;font-size:.56rem;color:var(--up);margin-top:.08rem;font-weight:500}
+.tmint{font-family:'IBM Plex Mono',monospace;font-size:.5rem;color:var(--gold);margin-top:.06rem}
+
+.istate{text-align:center;padding:1.5rem;font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--muted);line-height:1.75}
+.icode{font-size:.75rem;font-weight:600;color:var(--teal);margin-bottom:.3rem}
+.estate{text-align:center;padding:1.5rem;font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--muted)}
+.ecode{font-size:.75rem;font-weight:600;color:var(--dn);margin-bottom:.3rem}
+
+.tooltip{position:fixed;background:rgba(10,22,40,.95);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:.56rem;padding:.3rem .65rem;border-radius:6px;pointer-events:none;z-index:9999;opacity:0;transition:opacity .15s;max-width:320px;word-break:break-all;border:1px solid rgba(43,123,232,.3)}
+
+footer{text-align:center;padding:1.5rem;font-family:'IBM Plex Mono',monospace;font-size:.55rem;color:var(--muted);letter-spacing:.06em;border-top:1px solid rgba(255,255,255,.06);line-height:1.9}
+footer b{color:var(--teal)}
+
+@media(max-width:720px){
+  .hero{grid-template-columns:1fr}#oc{display:none}
+  .srow{grid-template-columns:repeat(2,1fr)}
+  .grid2{grid-template-columns:1fr}
+  .txi{grid-template-columns:44px 7px 1fr auto;gap:.45rem}
+}
+</style>
+</head>
+<body>
+<div class="tooltip" id="tip"></div>
+<header>
+  <div class="logo">SPCXx <b>/</b> Intelligence Terminal</div>
+  <div class="hright">
+    <div class="hprice" id="hp"><span style="color:var(--muted);font-size:.6rem">loading...</span></div>
+    <div class="hlive"><div class="dot"></div><span id="lu">live</span></div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div>
+      <h1>Who actually got<br>into <em>tokenized</em><br>SpaceX?</h1>
+      <p>xStocks' SPCXx launched into chaos. Bybit, Binance, Bitget all cancelled allocations. But someone got in. This terminal tracks who, how much, and at what price.</p>
+      <div class="tags">
+        <span class="tag" id="t-arb">Arbitrum</span>
+        <span class="tag" id="t-eth">Ethereum</span>
+        <span class="tag" id="t-bsc">BNB Chain</span>
+        <span class="tag" id="t-sol">Solana</span>
+        <span class="tag gr">GoldRush</span>
+        <span class="tag gr">Covalent</span>
+      </div>
+    </div>
+    <canvas id="oc" width="240" height="240"></canvas>
+  </section>
+
+  <!-- PRICE -->
+  <div class="card ppanel">
+    <div class="phead">
+      <div>
+        <div>
+          <span class="pbig" id="pv">--</span>
+          <span class="pchg chg" id="pc"></span>
+          <span class="src" id="ps" style="display:none">GoldRush</span>
+        </div>
+        <div class="psub" id="psub">SPCXx / USD &nbsp;|&nbsp; price via GoldRush pricing API</div>
+      </div>
+      <div class="tabs">
+        <div class="tab on" data-d="7">7D</div>
+        <div class="tab" data-d="14">14D</div>
+        <div class="tab" data-d="30">30D</div>
+      </div>
+    </div>
+    <div id="cw"><canvas id="cv"></canvas></div>
+    <div class="pmeta" id="pm" style="display:none">
+      <div class="pm"><div class="pml">24h Change</div><div class="pmv" id="chgs">--</div></div>
+      <div class="pm"><div class="pml">Source</div><div class="pmv t" id="psource">--</div></div>
+      <div class="pm"><div class="pml">Contract</div><div class="pmv" style="font-size:.65rem;color:var(--muted)">0x68fa48...ce28</div></div>
+      <div class="pm"><div class="pml">Chain</div><div class="pmv b" id="pchain">Arbitrum</div></div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <section class="srow">
+    <div class="card sc"><div class="sl">Onchain Holders</div><div class="sv blue" id="sh"><div class="shim" style="width:55%;height:22px;margin-top:3px"></div></div><div class="ss">self-custody wallets</div></div>
+    <div class="card sc"><div class="sl">Market Cap Est.</div><div class="sv teal" id="sm"><div class="shim" style="width:65%;height:22px;margin-top:3px"></div></div><div class="ss">price × onchain supply</div></div>
+    <div class="card sc"><div class="sl">CEX Custody</div><div class="sv" id="scex"><div class="shim" style="width:50%;height:22px;margin-top:3px"></div></div><div class="ss">identified exchange wallets</div></div>
+    <div class="card sc"><div class="sl">Top Holder Share</div><div class="sv" id="st"><div class="shim" style="width:45%;height:22px;margin-top:3px"></div></div><div class="ss">of onchain supply</div></div>
+  </section>
+
+  <!-- WHALE + DONUT -->
+  <div class="grid2">
+    <div class="card panel">
+      <div class="pt"><span id="wltitle">Top Holders / Whale Watch</span></div>
+      <div class="cnote" id="cn" style="display:none"><b>CEX custody wallets labeled.</b> Exchanges hold SPCXx in single omnibus wallets on behalf of thousands of users. Large positions here represent many individuals, not one whale.</div>
+      <div class="wl" id="wl">
+        <div class="shim" style="width:100%;height:64px;margin-bottom:2px"></div>
+        <div class="shim" style="width:100%;height:64px;margin-bottom:2px"></div>
+        <div class="shim" style="width:100%;height:64px;margin-bottom:2px"></div>
+        <div class="shim" style="width:100%;height:64px"></div>
+      </div>
+    </div>
+    <div class="card panel">
+      <div class="pt">Distribution</div>
+      <div class="dw">
+        <canvas id="dc" width="120" height="120"></canvas>
+        <div class="dl" id="dl">
+          <div class="shim" style="width:100%;height:13px"></div>
+          <div class="shim" style="width:80%;height:13px;margin-top:5px"></div>
+          <div class="shim" style="width:90%;height:13px;margin-top:5px"></div>
+        </div>
+        <div class="chdist" id="cd" style="display:none;width:100%"><div class="chdt">by chain</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSFERS -->
+  <div class="card pfull">
+    <div class="pt">Transfer Pulse / Live Transactions</div>
+    <div class="tl" id="tl">
+      <div class="shim" style="width:100%;height:54px;margin-bottom:7px"></div>
+      <div class="shim" style="width:100%;height:54px;margin-bottom:7px"></div>
+      <div class="shim" style="width:100%;height:54px"></div>
+    </div>
+  </div>
+</main>
+
+<footer>price: <b>GoldRush pricing</b> &nbsp;|&nbsp; onchain: <b>GoldRush / Covalent</b> &nbsp;|&nbsp; evm: 0x68fa48...ce28 &nbsp;|&nbsp; solana: Xs3oZwb...pH8 &nbsp;|&nbsp; auto-refresh every 2min</footer>
+
+<script>
+const CM={'arbitrum-mainnet':{l:'ARB',c:'#7BB8E8',t:'t-arb'},'eth-mainnet':{l:'ETH',c:'#3A86C8',t:'t-eth'},'bsc-mainnet':{l:'BNB',c:'#F0B429',t:'t-bsc'},'solana-mainnet':{l:'SOL',c:'#1BBFA5',t:'t-sol'},arbitrum:{l:'ARB',c:'#7BB8E8'},ethereum:{l:'ETH',c:'#3A86C8'},bnb:{l:'BNB',c:'#F0B429'},solana:{l:'SOL',c:'#1BBFA5'}};
+let price=0,hist=[],days=7,hc=0,pts=[];
+
+// ORBIT
+const oc=document.getElementById('oc'),ox=oc.getContext('2d'),OW=240,OH=240,CX=120,CY=120;
+function ip(n){pts=[];[[55,Math.min(7,Math.max(3,Math.floor(n*.07))),0.003,2.5,'#2B7BE8'],[80,Math.min(13,Math.max(6,Math.floor(n*.12))),-0.0022,1.8,'#1BBFA5'],[105,Math.min(19,Math.max(9,Math.floor(n*.17))),0.0015,1.2,'rgba(43,123,232,0.5)']].forEach(([r,n,sp,sz,c])=>{for(let i=0;i<n;i++)pts.push({a:(Math.PI*2/n)*i+Math.random()*.3,r:r+(Math.random()-.5)*3,sp:sp*(0.8+Math.random()*.4),sz,c,o:.6+Math.random()*.4});});}
+function dr(){ox.clearRect(0,0,OW,OH);[55,80,105].forEach(r=>{ox.beginPath();ox.arc(CX,CY,r,0,Math.PI*2);ox.strokeStyle='rgba(43,123,232,.12)';ox.lineWidth=1;ox.stroke();});
+const g=ox.createRadialGradient(CX,CY,0,CX,CY,36);g.addColorStop(0,'rgba(43,123,232,.2)');g.addColorStop(.5,'rgba(27,191,165,.08)');g.addColorStop(1,'rgba(43,123,232,0)');ox.beginPath();ox.arc(CX,CY,36,0,Math.PI*2);ox.fillStyle=g;ox.fill();
+ox.textAlign='center';ox.textBaseline='middle';ox.fillStyle='#fff';ox.font='bold 22px "Space Grotesk",sans-serif';ox.fillText(hc>0?hc.toLocaleString():'...',CX,CY-8);ox.font='8.5px "IBM Plex Mono",monospace';ox.fillStyle='rgba(255,255,255,.4)';ox.fillText('HOLDERS',CX,CY+13);
+pts.forEach(p=>{p.a+=p.sp;const x=CX+Math.cos(p.a)*p.r,y=CY+Math.sin(p.a)*p.r;ox.beginPath();ox.arc(x,y,p.sz,0,Math.PI*2);ox.fillStyle=p.c;ox.globalAlpha=p.o;ox.fill();ox.globalAlpha=1;});requestAnimationFrame(dr);}
+ip(20);dr();
+
+// HELPERS
+function cu(el,t){const s=performance.now();function step(n){const p=Math.min((n-s)/1000,1),e=1-Math.pow(1-p,3);el.textContent=Math.floor(t*e).toLocaleString();if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
+function fu(n){if(!n||isNaN(n))return'n/a';if(n>=1e9)return'$'+(n/1e9).toFixed(2)+'B';if(n>=1e6)return'$'+(n/1e6).toFixed(2)+'M';if(n>=1e3)return'$'+(n/1e3).toFixed(1)+'K';return'$'+n.toFixed(2);}
+function fmtTok(n){const v=parseFloat(n)||0;if(v>=1e6)return(v/1e6).toFixed(3)+'M';if(v>=1e3)return(v/1e3).toFixed(2)+'K';return v.toFixed(4);}
+function explorerUrl(addr,chain){
+  if(!addr)return'#';
+  const a=addr.toLowerCase();
+  if(chain==='ethereum'||chain==='eth-mainnet')return`https://etherscan.io/address/${addr}`;
+  if(chain==='arbitrum'||chain==='arbitrum-mainnet')return`https://arbiscan.io/address/${addr}`;
+  if(chain==='bnb'||chain==='bsc-mainnet')return`https://bscscan.com/address/${addr}`;
+  if(chain==='solana'||chain==='solana-mainnet')return`https://solscan.io/account/${addr}`;
+  return`https://etherscan.io/address/${addr}`;
+}
+
+// Wallet popup
+let activePopup=null;
+function showWalletPopup(e,addr,chain,label){
+  if(activePopup){activePopup.remove();activePopup=null;}
+  const url=explorerUrl(addr,chain);
+  const pop=document.createElement('div');
+  pop.style.cssText=`position:fixed;z-index:9999;background:#0F2A4A;border:1px solid rgba(43,123,232,.5);border-radius:10px;padding:.75rem 1rem;box-shadow:0 8px 32px rgba(0,0,0,.5);max-width:260px;font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.7);line-height:1.6;cursor:pointer`;
+  const x=Math.min(e.clientX,window.innerWidth-280);
+  const y=e.clientY+12;
+  pop.style.left=x+'px';pop.style.top=y+'px';
+  pop.innerHTML=`<div style="color:#2B7BE8;font-size:.65rem;font-weight:600;margin-bottom:.3rem">${label||'Wallet'}</div><div style="color:rgba(255,255,255,.5);word-break:break-all;margin-bottom:.5rem">${addr}</div><div style="background:rgba(43,123,232,.15);border:1px solid rgba(43,123,232,.3);border-radius:6px;padding:.4rem .6rem;color:#1BBFA5;text-align:center;font-size:.62rem">tap to view on explorer →</div>`;
+  pop.addEventListener('click',()=>window.open(url,'_blank'));
+  document.body.appendChild(pop);
+  activePopup=pop;
+  setTimeout(()=>{document.addEventListener('click',function dismiss(ev){if(!pop.contains(ev.target)){pop.remove();activePopup=null;document.removeEventListener('click',dismiss);}},true);},100);
+}
+function sh(a){if(!a||a.length<10)return a||'???';return a.slice(0,6)+'...'+a.slice(-4);}
+const tip=document.getElementById('tip');
+function st(e,t){tip.textContent=t;tip.style.opacity='1';}
+function mt(e){tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY-30)+'px';}
+function ht(){tip.style.opacity='0';}
+document.addEventListener('mousemove',mt);
+
+// DONUT
+function dd(cv,segs){const c=cv.getContext('2d'),w=cv.width,h=cv.height,r=w*.4,ir=r*.6,cx=w/2,cy=h/2;c.clearRect(0,0,w,h);let s=-Math.PI/2;segs.forEach(sg=>{const a=(sg.p/100)*Math.PI*2;c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,r,s,s+a);c.closePath();c.fillStyle=sg.c;c.fill();s+=a;});c.beginPath();c.arc(cx,cy,ir,0,Math.PI*2);c.fillStyle='rgba(10,22,40,1)';c.fill();}
+
+// LINE CHART
+function rc(d){
+  const cv=document.getElementById('cv'),wrap=document.getElementById('cw');
+  const dpr=window.devicePixelRatio||1;cv.width=wrap.offsetWidth*dpr;cv.height=wrap.offsetHeight*dpr;cv.style.width='100%';cv.style.height='100%';
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);const W=wrap.offsetWidth,H=wrap.offsetHeight;
+  const slice=hist.slice(-d);
+  if(!slice.length){ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='11px IBM Plex Mono,monospace';ctx.textAlign='center';ctx.fillText('price data indexing...',W/2,H/2);return;}
+  const prices=slice.map(p=>p.price);
+  const minP=Math.min(...prices)*.997,maxP=Math.max(...prices)*1.003;
+  const pad={t:16,r:10,b:24,l:62};const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const xS=i=>pad.l+(i/(slice.length-1||1))*cW,yS=v=>pad.t+cH-((v-minP)/(maxP-minP||1))*cH;
+  // grid
+  for(let i=0;i<5;i++){const y=pad.t+(i/4)*cH,v=maxP-(i/4)*(maxP-minP);ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cW,y);ctx.stroke();ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='7.5px IBM Plex Mono,monospace';ctx.textAlign='right';ctx.fillText('$'+v.toFixed(2),pad.l-4,y+3);}
+  const isUp=prices[prices.length-1]>=prices[0];
+  // area gradient
+  const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
+  if(isUp){grad.addColorStop(0,'rgba(27,191,165,.25)');grad.addColorStop(1,'rgba(43,123,232,0)');}
+  else{grad.addColorStop(0,'rgba(229,80,74,.2)');grad.addColorStop(1,'rgba(43,123,232,0)');}
+  ctx.beginPath();ctx.moveTo(xS(0),yS(prices[0]));prices.forEach((p,i)=>ctx.lineTo(xS(i),yS(p)));ctx.lineTo(xS(prices.length-1),pad.t+cH);ctx.lineTo(xS(0),pad.t+cH);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+  // glow line
+  ctx.shadowBlur=8;ctx.shadowColor=isUp?'#1BBFA5':'#E5504A';
+  ctx.beginPath();ctx.strokeStyle=isUp?'#1BBFA5':'#E5504A';ctx.lineWidth=2;ctx.lineJoin='round';ctx.lineCap='round';prices.forEach((p,i)=>i===0?ctx.moveTo(xS(i),yS(p)):ctx.lineTo(xS(i),yS(p)));ctx.stroke();
+  ctx.shadowBlur=0;
+  // endpoint dot
+  const lx=xS(prices.length-1),ly=yS(prices[prices.length-1]);
+  ctx.beginPath();ctx.arc(lx,ly,4,0,Math.PI*2);ctx.fillStyle=isUp?'#1BBFA5':'#E5504A';ctx.fill();
+  ctx.beginPath();ctx.arc(lx,ly,7,0,Math.PI*2);ctx.fillStyle=isUp?'rgba(27,191,165,.2)':'rgba(229,80,74,.2)';ctx.fill();
+  // x labels
+  const step=Math.max(1,Math.floor(slice.length/6));
+  ctx.fillStyle='rgba(255,255,255,.25)';ctx.font='7px IBM Plex Mono,monospace';ctx.textAlign='center';
+  slice.forEach((p,i)=>{if(i%step===0||i===slice.length-1){const dd=new Date(p.date);ctx.fillText(`${dd.getDate()}/${dd.getMonth()+1}`,xS(i),H-4);}});
+}
+document.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');days=parseInt(t.dataset.d);if(hist.length)rc(days);});});
+window.addEventListener('resize',()=>{if(hist.length)rc(days);});
+
+// GoldRush error → human message
+const GR_MSG={NO_CREDITS:'GoldRush credits exhausted — data resumes once the account is topped up.',BAD_KEY:'GoldRush API key rejected.',NO_KEY:'GoldRush API key not configured.',RATE_LIMIT:'GoldRush rate limit hit — retrying on next refresh.'};
+function grMsg(d){return GR_MSG[d.code]||d.error||'GoldRush request failed';}
+
+// FETCH PRICE
+async function fp(){
+  try{
+    const res=await fetch('/api/goldrush?endpoint=price');
+    const d=await res.json();
+    if(d.error){
+      document.getElementById('pv').textContent='n/a';
+      document.getElementById('psub').textContent=grMsg(d);
+      document.getElementById('hp').innerHTML='<span style="color:var(--muted);font-size:.6rem">offline</span>';
+      return;
+    }
+    if(!d.priceUsd){
+      document.getElementById('pv').textContent='n/a';
+      document.getElementById('psub').textContent='GoldRush has not indexed SPCXx price yet. Price will appear once the token gets more onchain activity.';
+      return;
+    }
+    price=d.priceUsd;
+    const chg=d.priceChange24h||0,isUp=chg>=0,cc=isUp?'up':'dn',cs=(isUp?'+':'')+chg.toFixed(2)+'%';
+    document.getElementById('pv').textContent='$'+price.toFixed(2);
+    document.getElementById('pc').textContent=' '+cs;document.getElementById('pc').className='pchg chg '+cc;
+    document.getElementById('ps').style.display='inline';
+    document.getElementById('psub').textContent=`SPCXx / USD  |  ${cs} 24h  |  GoldRush API`;
+    document.getElementById('hp').innerHTML=`<span>$${price.toFixed(2)}</span><span class="chg ${cc}">${cs}</span>`;
+    const pm=document.getElementById('pm');pm.style.display='flex';
+    const chge=document.getElementById('chgs');chge.textContent=cs;chge.className='pmv '+(isUp?'g':'r');
+    document.getElementById('psource').textContent=d.source||'GoldRush';
+    if(d.source)document.getElementById('pchain').textContent=d.source.includes('arbitrum')?'Arbitrum':d.source.includes('eth')?'Ethereum':d.source.includes('bsc')?'BNB Chain':'Multi-chain';
+    if(d.history?.length){hist=d.history;rc(days);}
+  }catch(e){console.error('Price:',e);}
+}
+
+// FETCH HOLDERS
+async function fh(){
+  try{
+    const res=await fetch('/api/goldrush?endpoint=all_holders');
+    const data=await res.json();
+    if(data.error)throw new Error(grMsg(data));
+    if(!data.chainData?.length)throw new Error('No holders indexed yet');
+    let total=0;const allH=[],cc={};let cexT=0;
+    data.chainData.forEach(({chain,items,total_count,decimals,quote_rate})=>{
+      const m=CM[chain]||{l:chain,c:'#aaa'};total+=total_count;cc[chain]=total_count;
+      if(m.t)document.getElementById(m.t)?.classList.add('on');
+      if(quote_rate>0&&price===0)price=quote_rate;
+      const tf=b=>{try{const s=String(b||'0').split('.')[0].replace(/[^0-9-]/g,'');return Number(BigInt(s||'0'))/Math.pow(10,decimals);}catch(e){return 0;}};
+      items.forEach(i=>{const a=i.address||i.token_holder_address||'',bal=tf(i.balance),lbl=i.label||null;if(lbl&&lbl!=='Issuance'&&lbl!=='Burn')cexT+=bal;allH.push({address:a,balance:bal,chain,cl:m.l,cc:m.c,label:lbl});});
+    });
+    hc=total;ip(total);
+    const ts=allH.reduce((s,h)=>s+h.balance,0);
+    const sorted=[...allH].sort((a,b)=>b.balance-a.balance);
+    const cexW=allH.filter(h=>h.label&&h.label!=='Issuance'&&h.label!=='Burn');
+    cu(document.getElementById('sh'),total);
+    document.getElementById('st').textContent=ts>0?((sorted[0]?.balance||0)/ts*100).toFixed(1)+'%':'n/a';
+    document.getElementById('scex').textContent=cexW.length>0?cexW.length+' wallets':'0';
+    if(price>0&&ts>0)document.getElementById('sm').textContent=fu(ts*price);
+    document.getElementById('lu').textContent=new Date().toLocaleTimeString();
+    if(cexW.length)document.getElementById('cn').style.display='block';
+    // whale list
+    const wl=document.getElementById('wl');wl.innerHTML='';
+    const mb=sorted[0]?.balance||0;
+    sorted.forEach(h=>{
+      const pct=ts>0?(h.balance/ts*100).toFixed(2):'0.00';
+      const usd=price>0?fu(h.balance*price):'';
+      const bw=mb>0?(h.balance/mb*100).toFixed(1):0;
+      const ic=h.label&&h.label!=='Issuance'&&h.label!=='Burn';
+      const el=document.createElement('div');el.className='wi';
+      el.innerHTML=`<div class="wtop"><div class="wleft"><span class="waddr">${sh(h.address)}</span>${ic?`<span class="wcex">${h.label}</span>`:''}<span class="wch" style="color:${h.cc}">${h.cl}</span></div><span class="wpct">${pct}%</span></div><div class="wbar"><div class="wfill${ic?' cx':''}" style="width:0%" data-w="${bw}"></div></div><div class="wbot"><span class="wtok">${fmtTok(h.balance)} SPCXx${ic?' (custody)':''}</span>${usd?`<span class="wusd">${usd}</span>`:''}</div>`;
+      el.style.cursor='pointer';
+      el.addEventListener('click',e=>{e.stopPropagation();showWalletPopup(e,h.address,h.chain,ic?h.label:h.address.slice(0,8)+'...'+h.address.slice(-6));});
+      wl.appendChild(el);
+    });
+    setTimeout(()=>{document.querySelectorAll('.wfill').forEach(b=>{b.style.width=b.dataset.w+'%';});},100);
+    const wlEl=document.getElementById('wl');
+    const wlTitle=document.getElementById('wltitle');
+    if(wlEl&&wlTitle){wlEl.addEventListener('scroll',()=>{if(wlEl.scrollTop>10){wlTitle.textContent='All Wallets';}else{wlTitle.textContent='Top Holders / Whale Watch';}});}
+    // donut
+    const cp=ts>0?cexT/ts*100:0,sb=allH.filter(h=>!h.label).reduce((s,h)=>s+h.balance,0),sp=ts>0?sb/ts*100:0,rp=Math.max(0,100-cp-sp);
+    const segs=[{l:'CEX Custody',p:cp,c:'#F5A623',n:cexW.length},{l:'Self-custody',p:sp,c:'#2B7BE8',n:allH.filter(h=>!h.label&&ts>0&&h.balance/ts*100>=1).length},{l:'Retail',p:rp,c:'rgba(43,123,232,.3)',n:allH.filter(h=>!h.label&&ts>0&&h.balance/ts*100<1).length}];
+    dd(document.getElementById('dc'),segs);
+    document.getElementById('dl').innerHTML=segs.map(s=>`<div class="dli"><div class="dll"><div class="dld" style="background:${s.c}"></div><span style="font-weight:500;font-size:.68rem;color:rgba(255,255,255,.85)">${s.l}</span></div><span class="dlv">${s.p.toFixed(1)}% / ${s.n}w</span></div>`).join('');
+    const de=document.getElementById('cd');de.style.display='flex';
+    de.innerHTML='<div class="chdt">by chain</div>'+Object.entries(cc).map(([c,n])=>{const m=CM[c]||{l:c,c:'#aaa'};return`<div class="chdi"><span class="chdn" style="color:${m.c}">${m.l}</span><span class="chdc">${n} holders</span></div>`;}).join('');
+  }catch(e){console.error('Holders:',e);document.getElementById('wl').innerHTML=`<div class="estate"><div class="ecode">UNAVAILABLE</div>${e.message}</div>`;['sh','sm','scex','st'].forEach(id=>{document.getElementById(id).textContent='—';});}
+}
+
+// FETCH TRANSFERS
+async function ft(){
+  try{
+    const res=await fetch('/api/goldrush?endpoint=transfers');
+    const data=await res.json();
+    if(data.error)throw new Error(grMsg(data));
+    const items=data.items||[];
+    const tl=document.getElementById('tl');
+    if(!items.length){tl.innerHTML=`<div class="istate"><div class="icode">AWAITING TRANSFERS</div>No ERC20 events indexed yet.<br>Populates as tokens move between wallets.</div>`;return;}
+    tl.innerHTML='';
+    const Z='0x0000000000000000000000000000000000000000';
+    items.slice(0,20).forEach((item,idx)=>{
+      const chain=item.chain||'',m=CM[chain]||{l:chain,c:'#aaa'};
+      const from=item.from_address||'',to=item.to_address||'',fL=item.from_label,tL=item.to_label,amt=item.amount||0;
+      const usd=price>0&&amt>0?fu(amt*price):'',isMint=from===Z;
+      const ts=item.block_signed_at?new Date(item.block_signed_at):new Date(),hash=item.tx_hash||'';
+      const div=document.createElement('div');div.className='txi';
+      div.innerHTML=`<div class="ttime">${ts.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}<br>${ts.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div><div class="tdot" style="color:${m.c};background:${m.c}"></div><div><div class="taddrs">${isMint?'<span>mint</span>':`<span>${fL?`<span class="tlbl">${fL}</span>`:sh(from)}</span>`}<span class="tarr">→</span><span>${tL?`<span class="tlbl">${tL}</span>`:sh(to)}</span></div><div class="tsub">${sh(hash)}</div></div><div class="tr"><div class="tamt">${amt>0?fmtTok(amt)+' SPCXx':'--'}</div>${usd?`<div class="tusd">${usd}</div>`:''}${isMint?'<div class="tmint">issuance</div>':''}</div>`;
+      div.addEventListener('mouseenter',e=>st(e,hash||from));div.addEventListener('mouseleave',ht);
+      tl.appendChild(div);setTimeout(()=>div.classList.add('v'),idx*55);
+    });
+  }catch(e){console.error('Transfers:',e);document.getElementById('tl').innerHTML=`<div class="estate"><div class="ecode">UNAVAILABLE</div>${e.message}</div>`;}
+}
+
+fp().then(()=>{fh();ft();});
+setInterval(()=>{fp().then(()=>fh());ft();},120000);
+</script>
+</body>
+</html>
